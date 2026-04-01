@@ -3,13 +3,15 @@ services:
     build: .
     container_name: neodash-panel
     restart: always
-    # Network Mode Host ist die Lösung für das "Offline"-Problem:
-    # Der Container nutzt das Netzwerk des KVMs direkt. 
     network_mode: "host" 
     pid: "host"
     privileged: true
     environment:
-      - PANEL_PORT=${PANEL_PORT}
+      # Wir übergeben den Port an die Java-App
+      - SERVER_PORT=${PANEL_PORT} # Für Spring Boot / Standard Web-Frameworks
+      - PANEL_PORT=${PANEL_PORT}  # Fallback, falls du das im Code so ausliest
+      - NEODASH_DATA_PATH=/app/data
+      - NEODASH_SERVER_PATH=/app/servers
     volumes:
       - ${DATA_PATH}:/app/data
       - ${SERVER_PATH}:/app/servers
