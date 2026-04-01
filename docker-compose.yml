@@ -1,14 +1,15 @@
-version: "3.9"
 services:
   neodash:
     build: .
-    pid: "host"
     container_name: neodash-panel
     restart: always
-    ports:
-      - "${PANEL_PORT}:8080"
+    # Network Mode Host ist die Lösung für das "Offline"-Problem:
+    # Der Container nutzt das Netzwerk des KVMs direkt. 
+    network_mode: "host" 
+    pid: "host"
+    privileged: true
+    environment:
+      - PANEL_PORT=${PANEL_PORT}
     volumes:
       - ${DATA_PATH}:/app/data
-      - ${SERVER_PATH}:/home/maximt/server
-    stdin_open: true
-    tty: true
+      - ${SERVER_PATH}:/app/servers
