@@ -1,14 +1,16 @@
 FROM eclipse-temurin:21-jdk-jammy
 WORKDIR /app
 
-# Installiere curl und wget
-RUN apt-get update && apt-get install -y curl wget && rm -rf /var/lib/apt/lists/*
+# Installiere curl
+RUN apt-get update && apt-get install -y curl && rm -rf /var/lib/apt/lists/*
 
-# Magie: Fragt die GitHub-API nach dem neuesten Release, sucht den Download-Link der .jar und lädt sie als app.jar herunter
-RUN curl -s https://api.github.com/repos/Framepersecond/NeoDash/releases/latest \
-    | grep "browser_download_url.*\.jar" \
-    | cut -d '"' -f 4 \
-    | wget -qi - -O app.jar
+# Fragt die GitHub-API nach dem neuesten Release und lädt die .jar herunter
+RUN DOWNLOAD_URL=$(curl -fsSL https://api.github.com/repos/Framepersecond/NeoDash/releases/latest \
+        | grep -o '"browser_download_url":"[^"]*\.jar"' \
+        | cut -d'"' -f4) \
+    && [ -n "$DOWNLOAD_URL" ] || { echo "Fehler: Kein JAR-Artefakt im neuesten Release gefunden."; exit 1; } \
+    && echo "Downloading NeoDash from: $DOWNLOAD_URL" \
+    && curl -fSL "$DOWNLOAD_URL" -o app.jar
 
 # Erstelle die Standard-Ordner im Container
 RUN mkdir -p /app/data /app/servers
@@ -17,5 +19,5 @@ RUN mkdir -p /app/data /app/servers
 ENV NEODASH_DATA_PATH=/app/data
 ENV NEODASH_SERVER_PATH=/app/servers
 
-# Startbefehl
-ENTRYPOINT ["java", "-jar", "app.jar"]
+# Startbefehl – PANEL_PORT wird als JVM-Property übergeben, damit der Web-Server den konfigurierten Port nutzt
+ENTRYPOINT ["sh", "-c", "exec java -Dneodash.port=${PANEL_PORT:-8080} -jar app.jar"]
