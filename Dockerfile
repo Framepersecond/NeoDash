@@ -9,11 +9,13 @@ RUN mvn clean package -DskipTests
 FROM eclipse-temurin:21-jdk-jammy
 WORKDIR /app
 
-# Greift automatisch die richtige JAR-Datei, egal welche Version in der pom.xml steht
-COPY --from=build /build/target/*.jar app.jar
+# WICHTIG: Wir nehmen exakt die Fat JAR und ignorieren die "original-*.jar"
+COPY --from=build /build/target/NeoDash-1.0.jar app.jar
 
-# Erstelle die Standard-Ordner im Container
+ENV NEODASH_DATA_PATH=/app/data
+ENV NEODASH_SERVER_PATH=/app/servers
+
 RUN mkdir -p /app/data /app/servers
 
-# Startbefehl
+EXPOSE 8080
 ENTRYPOINT ["java", "-jar", "app.jar"]
