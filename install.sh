@@ -73,19 +73,19 @@ echo -e "Bitte beantworte die folgenden Fragen, um dein Panel einzurichten.\n"
 
 # Port Abfrage
 echo -ne "${CYAN}Welcher Port soll für das Web-Panel genutzt werden? [8080]: ${NC}"
-read PANEL_PORT
+read PANEL_PORT < /dev/tty
 PANEL_PORT=${PANEL_PORT:-8080}
 
 # Server Pfad Abfrage (Mit Auflösung zu absolutem Pfad!)
 echo -ne "${CYAN}Wo liegen deine Minecraft-Server? (z.B. /home/user/servers) [./servers]: ${NC}"
-read SERVER_DIR_INPUT
+read SERVER_DIR_INPUT < /dev/tty
 SERVER_DIR_INPUT=${SERVER_DIR_INPUT:-./servers}
 mkdir -p "$SERVER_DIR_INPUT"
-SERVER_PATH=$(readlink -f "$SERVER_DIR_INPUT") # Wandelt ./ in absoluten Pfad um!
+SERVER_PATH=$(readlink -f "$SERVER_DIR_INPUT") 
 
 # Datenbank Pfad Abfrage
 echo -ne "${CYAN}Wo sollen die NeoDash-Systemdaten gespeichert werden? [./data]: ${NC}"
-read DATA_DIR_INPUT
+read DATA_DIR_INPUT < /dev/tty
 DATA_DIR_INPUT=${DATA_DIR_INPUT:-./data}
 mkdir -p "$DATA_DIR_INPUT"
 DATA_PATH=$(readlink -f "$DATA_DIR_INPUT")
