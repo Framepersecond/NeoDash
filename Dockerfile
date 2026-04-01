@@ -3,6 +3,7 @@ WORKDIR /app
 
 # Installiere curl und jq
 RUN apt-get update && apt-get install -y curl jq && rm -rf /var/lib/apt/lists/*
+RUN apt-get update && apt-get install -y screen procps && rm -rf /var/lib/apt/lists/*
 
 # Fragt die GitHub-API nach dem neuesten Release und lädt die .jar herunter
 RUN DOWNLOAD_URL=$(curl -fsSL https://api.github.com/repos/Framepersecond/NeoDash/releases/latest \
