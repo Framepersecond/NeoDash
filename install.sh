@@ -72,17 +72,20 @@ echo -e "\n${YELLOW}[4/5] NeoDash Konfiguration${NC}"
 echo -e "Bitte beantworte die folgenden Fragen, um dein Panel einzurichten.\n"
 
 # Port Abfrage
-read -p "$(echo -e ${CYAN}Welcher Port soll für das Web-Panel genutzt werden? [8080]: ${NC})" PANEL_PORT
+echo -ne "${CYAN}Welcher Port soll für das Web-Panel genutzt werden? [8080]: ${NC}"
+read PANEL_PORT
 PANEL_PORT=${PANEL_PORT:-8080}
 
 # Server Pfad Abfrage (Mit Auflösung zu absolutem Pfad!)
-read -p "$(echo -e ${CYAN}Wo liegen deine Minecraft-Server? (z.B. /home/user/servers) [./servers]: ${NC})" SERVER_DIR_INPUT
+echo -ne "${CYAN}Wo liegen deine Minecraft-Server? (z.B. /home/user/servers) [./servers]: ${NC}"
+read SERVER_DIR_INPUT
 SERVER_DIR_INPUT=${SERVER_DIR_INPUT:-./servers}
 mkdir -p "$SERVER_DIR_INPUT"
 SERVER_PATH=$(readlink -f "$SERVER_DIR_INPUT") # Wandelt ./ in absoluten Pfad um!
 
 # Datenbank Pfad Abfrage
-read -p "$(echo -e ${CYAN}Wo sollen die NeoDash-Systemdaten gespeichert werden? [./data]: ${NC})" DATA_DIR_INPUT
+echo -ne "${CYAN}Wo sollen die NeoDash-Systemdaten gespeichert werden? [./data]: ${NC}"
+read DATA_DIR_INPUT
 DATA_DIR_INPUT=${DATA_DIR_INPUT:-./data}
 mkdir -p "$DATA_DIR_INPUT"
 DATA_PATH=$(readlink -f "$DATA_DIR_INPUT")
@@ -93,7 +96,6 @@ PANEL_PORT=$PANEL_PORT
 SERVER_PATH=$SERVER_PATH
 DATA_PATH=$DATA_PATH
 EOF
-
 # --- 5. Container Build & Start ---
 echo -e "\n${YELLOW}[5/5] Starte Docker Compose Build...${NC}"
 echo -e "Das Kompilieren von Java 21 kann beim ersten Mal 1-2 Minuten dauern. Bitte warten...\n"
