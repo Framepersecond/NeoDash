@@ -1,4 +1,4 @@
-# STAGE 1: Bauen
+# STAGE 1: Kompilieren
 FROM maven:3.9-eclipse-temurin-21 AS build
 WORKDIR /build
 COPY pom.xml .
@@ -9,15 +9,11 @@ RUN mvn clean package -DskipTests
 FROM eclipse-temurin:21-jdk-jammy
 WORKDIR /app
 
-# Wir kopieren die fertige Datei aus Stage 1
-COPY --from=build /build/target/NeoDash-1.0.jar app.jar
+# Greift automatisch die richtige JAR-Datei, egal welche Version in der pom.xml steht
+COPY --from=build /build/target/*.jar app.jar
 
-# WICHTIG: Wir setzen die Umgebungsvariable für den internen Pfad
-ENV NEODASH_DATA_PATH=/app/data
-ENV NEODASH_SERVER_PATH=/app/servers
-
-# Erstelle die Ordner im Container
+# Erstelle die Standard-Ordner im Container
 RUN mkdir -p /app/data /app/servers
 
-EXPOSE 8080
+# Startbefehl
 ENTRYPOINT ["java", "-jar", "app.jar"]
