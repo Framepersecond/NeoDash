@@ -129,4 +129,27 @@ docker compose up -d
 
 ## License
 
+
+---
+
+<div align="center">
+
+## 🤝 Partner
+
+<a href="https://emeraldhost.de/frxme">
+  <img src="https://cdn.emeraldhost.de/branding/icon/icon.png" width="80" alt="Emerald Host Logo">
+</a>
+
+### Powered by EmeraldHost
+
+*DDoS-Protection, NVMe Performance und 99.9% Uptime.* *Der Host meines Vertrauens für alle Development-Server.*
+
+<a href="https://emeraldhost.de/frxme">
+  <img src="https://img.shields.io/badge/Code-Frxme10-10b981?style=for-the-badge&logo=gift&logoColor=white&labelColor=0f172a" alt="Use Code Frxme10 for 10% off">
+</a>
+
+</div>
+
+---
+
 BSD 3-Clause (see `LICENSE` if included in your distribution).
