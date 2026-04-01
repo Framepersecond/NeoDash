@@ -83,11 +83,14 @@ For Vanilla/Fabric/Quilt environments without Bukkit plugin metrics, NeoDash use
 
 ## Installation & Easy Setup
 
-### One-Liner Install
+### Install
 
+### 1. Repository klonen
 ```bash
-curl -sSL https://raw.githubusercontent.com/Framepersecond/NeoDash/main/install.sh | bash
-```
+git clone [https://github.com/Framepersecond/NeoDash.git](https://github.com/Framepersecond/NeoDash.git)
+cd NeoDash
+chmod +x install.sh
+./install.sh
 
 NeoDash is designed for zero-config bootstrap: detect environment, prepare runtime paths, and become panel-ready in seconds.
 
