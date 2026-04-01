@@ -1,0 +1,14 @@
+version: "3.9"
+services:
+  neodash:
+    build: .
+    pid: "host"
+    container_name: neodash-panel
+    restart: always
+    ports:
+      - "${PANEL_PORT}:8080"
+    volumes:
+      - ${DATA_PATH}:/app/data
+      - ${SERVER_PATH}:/home/maximt/server
+    stdin_open: true
+    tty: true
