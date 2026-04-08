@@ -1,23 +1,22 @@
-FROM eclipse-temurin:21-jdk-jammy
+FROM eclipse-temurin:21-jdk-alpine
 WORKDIR /app
 
-# Installiere curl und jq
-RUN apt-get update && apt-get install -y curl jq && rm -rf /var/lib/apt/lists/*
-RUN apt-get update && apt-get install -y screen procps && rm -rf /var/lib/apt/lists/*
+# Install curl, jq, screen, and procps
+RUN apk add --no-cache curl jq screen procps
 
-# Fragt die GitHub-API nach dem neuesten Release und lädt die .jar herunter
+# Fetch the latest release from the GitHub API and download the JAR
 RUN DOWNLOAD_URL=$(curl -fsSL https://api.github.com/repos/Framepersecond/NeoDash/releases/latest \
         | jq -r '.assets[] | select(.name | endswith(".jar")) | .browser_download_url') \
-    && [ -n "$DOWNLOAD_URL" ] || { echo "Fehler: Kein JAR-Artefakt im neuesten Release gefunden."; exit 1; } \
+    && [ -n "$DOWNLOAD_URL" ] || { echo "Error: No JAR artifact found in the latest release."; exit 1; } \
     && echo "Downloading NeoDash from: $DOWNLOAD_URL" \
     && curl -fSL "$DOWNLOAD_URL" -o app.jar
 
-# Erstelle die Standard-Ordner im Container
+# Create default directories inside the container
 RUN mkdir -p /app/data /app/servers
 
-# Setze die Umgebungsvariablen
+# Set environment variables
 ENV NEODASH_DATA_PATH=/app/data
 ENV NEODASH_SERVER_PATH=/app/servers
 
-# Startbefehl – PANEL_PORT wird als JVM-Property übergeben, damit der Web-Server den konfigurierten Port nutzt
+# Start command – PANEL_PORT is passed as a JVM property so the web server uses the configured port
 ENTRYPOINT ["sh", "-c", "exec java -Dneodash.port=${PANEL_PORT:-8080} -jar app.jar"]
