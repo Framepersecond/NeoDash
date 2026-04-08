@@ -78,16 +78,17 @@ fi
 echo -e "${GREEN}✔ Git is available.${NC}"
 
 # --- 2. Clone repository (if run via curl) ---
-if [ ! -f "docker-compose.yml" ]; then
+if [ ! -f "/NeoDash/docker-compose.yml" ]; then
     echo -e "\n${YELLOW}[2/5] Downloading NeoDash files from GitHub...${NC}"
-    if [ -d "NeoDash" ]; then
+    if [ -d "/NeoDash" ]; then
         echo -e "${YELLOW}Removing old NeoDash directory...${NC}"
-        rm -rf NeoDash
+        sudo rm -rf /NeoDash
     fi
-    git clone https://github.com/Framepersecond/NeoDash.git
-    cd NeoDash
+    sudo git clone https://github.com/Framepersecond/NeoDash.git /NeoDash
+    cd /NeoDash
 else
     echo -e "\n${GREEN}✔ NeoDash files already present.${NC}"
+    cd /NeoDash
 fi
 
 # --- Docker Installation (distro-aware) ---
@@ -204,17 +205,17 @@ read PANEL_PORT < /dev/tty
 PANEL_PORT=${PANEL_PORT:-8080}
 
 # Server path question (resolved to absolute path)
-echo -ne "${CYAN}Where are your Minecraft servers located? (e.g. /home/user/servers) [./servers]: ${NC}"
+echo -ne "${CYAN}Where are your Minecraft servers located? (e.g. /home/user/servers) [/servers]: ${NC}"
 read SERVER_DIR_INPUT < /dev/tty
-SERVER_DIR_INPUT=${SERVER_DIR_INPUT:-./servers}
-mkdir -p "$SERVER_DIR_INPUT"
+SERVER_DIR_INPUT=${SERVER_DIR_INPUT:-/servers}
+sudo mkdir -p "$SERVER_DIR_INPUT"
 SERVER_PATH=$(readlink -f "$SERVER_DIR_INPUT")
 
 # Data directory question
-echo -ne "${CYAN}Where should NeoDash system data be stored? [./data]: ${NC}"
+echo -ne "${CYAN}Where should NeoDash system data be stored? [/NeoDash/data]: ${NC}"
 read DATA_DIR_INPUT < /dev/tty
-DATA_DIR_INPUT=${DATA_DIR_INPUT:-./data}
-mkdir -p "$DATA_DIR_INPUT"
+DATA_DIR_INPUT=${DATA_DIR_INPUT:-/NeoDash/data}
+sudo mkdir -p "$DATA_DIR_INPUT"
 DATA_PATH=$(readlink -f "$DATA_DIR_INPUT")
 
 echo -e "\n${GREEN}✔ Saving configuration to .env...${NC}"
