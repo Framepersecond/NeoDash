@@ -219,7 +219,7 @@ sudo mkdir -p "$DATA_DIR_INPUT"
 DATA_PATH=$(readlink -f "$DATA_DIR_INPUT")
 
 echo -e "\n${GREEN}✔ Saving configuration to .env...${NC}"
-cat <<EOF > .env
+cat <<EOF | sudo tee .env > /dev/null
 PANEL_PORT=$PANEL_PORT
 SERVER_PATH=$SERVER_PATH
 DATA_PATH=$DATA_PATH
