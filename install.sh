@@ -90,16 +90,106 @@ else
     echo -e "\n${GREEN}✔ NeoDash files already present.${NC}"
 fi
 
+# --- Docker Installation (distro-aware) ---
+install_docker() {
+    # Determine the distro ID and family from /etc/os-release
+    local DISTRO_ID=""
+    local DISTRO_ID_LIKE=""
+    if [ -f /etc/os-release ]; then
+        DISTRO_ID=$(. /etc/os-release && echo "${ID:-}")
+        DISTRO_ID_LIKE=$(. /etc/os-release && echo "${ID_LIKE:-}")
+    fi
+
+    echo -e "${YELLOW}Detected distribution: ${DISTRO_ID}${NC}"
+
+    # Helper: is this an Arch-family system?
+    is_arch_family() {
+        [[ "$DISTRO_ID" == "arch" || "$DISTRO_ID" == "manjaro" || \
+           "$DISTRO_ID" == "endeavouros" || "$DISTRO_ID" == "garuda" || \
+           "$DISTRO_ID_LIKE" == *"arch"* ]]
+    }
+
+    # Helper: is this a Debian/Ubuntu-family system?
+    is_debian_family() {
+        [[ "$DISTRO_ID" == "debian" || "$DISTRO_ID" == "ubuntu" || \
+           "$DISTRO_ID_LIKE" == *"debian"* || "$DISTRO_ID_LIKE" == *"ubuntu"* ]]
+    }
+
+    # Helper: is this a Fedora/RHEL-family system?
+    is_rhel_family() {
+        [[ "$DISTRO_ID" == "fedora" || "$DISTRO_ID" == "rhel" || \
+           "$DISTRO_ID" == "centos" || "$DISTRO_ID" == "rocky" || \
+           "$DISTRO_ID" == "almalinux" || "$DISTRO_ID_LIKE" == *"rhel"* || \
+           "$DISTRO_ID_LIKE" == *"fedora"* ]]
+    }
+
+    if is_arch_family; then
+        # Arch and derivatives (Manjaro, EndeavourOS, etc.)
+        sudo pacman -Sy --noconfirm docker docker-compose
+        sudo systemctl enable --now docker
+
+    elif is_debian_family; then
+        # Debian / Ubuntu — use Docker's official apt repository
+        sudo apt-get update -y
+        sudo apt-get install -y ca-certificates curl gnupg lsb-release
+        sudo install -m 0755 -d /etc/apt/keyrings
+        curl -fsSL https://download.docker.com/linux/"${DISTRO_ID}"/gpg \
+            | sudo gpg --dearmor -o /etc/apt/keyrings/docker.gpg
+        sudo chmod a+r /etc/apt/keyrings/docker.gpg
+        echo \
+            "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/docker.gpg] \
+https://download.docker.com/linux/${DISTRO_ID} \
+$(lsb_release -cs) stable" \
+            | sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
+        sudo apt-get update -y
+        sudo apt-get install -y docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin
+        sudo systemctl enable --now docker
+
+    elif is_rhel_family; then
+        # Fedora / RHEL / CentOS / Rocky / AlmaLinux — use Docker's official dnf/yum repo
+        if command -v dnf &>/dev/null; then
+            sudo dnf -y install dnf-plugins-core
+            sudo dnf config-manager --add-repo https://download.docker.com/linux/fedora/docker-ce.repo
+            sudo dnf install -y docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin
+        else
+            sudo yum install -y yum-utils
+            sudo yum-config-manager --add-repo https://download.docker.com/linux/centos/docker-ce.repo
+            sudo yum install -y docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin
+        fi
+        sudo systemctl enable --now docker
+
+    elif command -v zypper &>/dev/null; then
+        # openSUSE / SLES
+        sudo zypper refresh
+        sudo zypper install -y docker docker-compose
+        sudo systemctl enable --now docker
+
+    elif command -v apk &>/dev/null; then
+        # Alpine Linux
+        sudo apk update
+        sudo apk add --no-cache docker docker-compose
+        sudo rc-update add docker boot
+        sudo service docker start
+
+    else
+        # Generic fallback: try get.docker.com convenience script
+        echo -e "${YELLOW}No specific Docker installation method found for '${DISTRO_ID}'. Trying generic installer...${NC}"
+        curl -fsSL https://get.docker.com -o /tmp/get-docker.sh
+        sudo sh /tmp/get-docker.sh
+        rm -f /tmp/get-docker.sh
+        sudo systemctl enable --now docker || true
+    fi
+
+    # Add current user to the docker group so sudo is not needed for docker commands
+    sudo usermod -aG docker "$USER" || true
+    echo -e "${GREEN}✔ Docker successfully installed.${NC}"
+}
+
 # --- 3. Docker Installation & Check ---
 echo -e "\n${YELLOW}[3/5] Checking Docker environment...${NC}"
 if ! command -v docker &>/dev/null; then
     echo -e "${YELLOW}Docker not found. Installing Docker...${NC}"
-    curl -fsSL https://get.docker.com -o get-docker.sh
-    sudo sh get-docker.sh
-    rm get-docker.sh
-    # Add current user to the docker group so sudo is not needed for docker commands
-    sudo usermod -aG docker $USER
-    echo -e "${GREEN}✔ Docker successfully installed.${NC}"
+    install_docker
 else
     echo -e "${GREEN}✔ Docker is already installed.${NC}"
 fi
