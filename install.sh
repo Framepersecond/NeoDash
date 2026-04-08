@@ -78,17 +78,18 @@ fi
 echo -e "${GREEN}✔ Git is available.${NC}"
 
 # --- 2. Clone repository (if run via curl) ---
-if [ ! -f "/NeoDash/docker-compose.yml" ]; then
+NEODASH_DIR="$HOME/NeoDash"
+if [ ! -f "$NEODASH_DIR/docker-compose.yml" ]; then
     echo -e "\n${YELLOW}[2/5] Downloading NeoDash files from GitHub...${NC}"
-    if [ -d "/NeoDash" ]; then
+    if [ -d "$NEODASH_DIR" ]; then
         echo -e "${YELLOW}Removing old NeoDash directory...${NC}"
-        sudo rm -rf /NeoDash
+        rm -rf "$NEODASH_DIR"
     fi
-    sudo git clone https://github.com/Framepersecond/NeoDash.git /NeoDash
-    cd /NeoDash
+    git clone https://github.com/Framepersecond/NeoDash.git "$NEODASH_DIR"
+    cd "$NEODASH_DIR"
 else
     echo -e "\n${GREEN}✔ NeoDash files already present.${NC}"
-    cd /NeoDash
+    cd "$NEODASH_DIR"
 fi
 
 # --- Docker Installation (distro-aware) ---
@@ -205,21 +206,21 @@ read PANEL_PORT < /dev/tty
 PANEL_PORT=${PANEL_PORT:-8080}
 
 # Server path question (resolved to absolute path)
-echo -ne "${CYAN}Where are your Minecraft servers located? (e.g. /home/user/servers) [/servers]: ${NC}"
+echo -ne "${CYAN}Where are your Minecraft servers located? (e.g. ~/servers) [$HOME/servers]: ${NC}"
 read SERVER_DIR_INPUT < /dev/tty
-SERVER_DIR_INPUT=${SERVER_DIR_INPUT:-/servers}
-sudo mkdir -p "$SERVER_DIR_INPUT"
+SERVER_DIR_INPUT=${SERVER_DIR_INPUT:-$HOME/servers}
+mkdir -p "$SERVER_DIR_INPUT"
 SERVER_PATH=$(readlink -f "$SERVER_DIR_INPUT")
 
 # Data directory question
-echo -ne "${CYAN}Where should NeoDash system data be stored? [/NeoDash/data]: ${NC}"
+echo -ne "${CYAN}Where should NeoDash system data be stored? [$HOME/NeoDash/data]: ${NC}"
 read DATA_DIR_INPUT < /dev/tty
-DATA_DIR_INPUT=${DATA_DIR_INPUT:-/NeoDash/data}
-sudo mkdir -p "$DATA_DIR_INPUT"
+DATA_DIR_INPUT=${DATA_DIR_INPUT:-$HOME/NeoDash/data}
+mkdir -p "$DATA_DIR_INPUT"
 DATA_PATH=$(readlink -f "$DATA_DIR_INPUT")
 
 echo -e "\n${GREEN}✔ Saving configuration to .env...${NC}"
-cat <<EOF | sudo tee .env > /dev/null
+cat <<EOF | tee .env > /dev/null
 PANEL_PORT=$PANEL_PORT
 SERVER_PATH=$SERVER_PATH
 DATA_PATH=$DATA_PATH
