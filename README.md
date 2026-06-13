@@ -43,7 +43,7 @@ That split keeps NeoDash lightweight while still giving operators one secure ent
 | RBAC and server permissions | Global roles, custom role permissions, main-admin ownership transfer, server assignments, and server-scoped rights for start, console, files, properties, and settings. |
 | Bridge user approval | SSO-created bridge users wait for admin approval before they can enter NeoDash. |
 | Server groups | Group servers for clearer operations and dashboard summaries. |
-| Graph snapshots | Homey-style comparison graphs saved as NeoDash JSON snapshots. |
+| Graph snapshots | Comparison graphs saved as NeoDash JSON snapshots. |
 | Notifications | Persistent web notification center plus Discord webhook dispatch for audit and smart-alert events. |
 | Updates | GitHub-based update checks/downloads for NeoDash and version visibility for Dash, FabricDash, and ForgeDash. |
 | Responsive interface | Polished dark UI with smoother navigation, dashboard motion, custom selects, and repaired mobile sidebar behavior. |
