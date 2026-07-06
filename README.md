@@ -1,121 +1,154 @@
-# NeoDash - Minecraft Network Ops Hub
+# NeoDash
 
-> The native control layer for Minecraft server fleets: provisioning, lifecycle control, live metrics, offline recovery, permissions, audit, and secure bridge handoff to Dash, FabricDash, and ForgeDash.
+<div align="center">
 
-[![Version](https://img.shields.io/badge/Version-1.5.1-blue)](#release-status)
-[![Java 21+](https://img.shields.io/badge/Java-21%2B-orange)](#requirements)
-[![Linux Native](https://img.shields.io/badge/Linux-Native-success)](#installation)
-[![systemd](https://img.shields.io/badge/systemd-Native-success)](#installation)
-[![screen](https://img.shields.io/badge/screen-Server%20Control-22c55e)](#requirements)
-[![Docker Optional](https://img.shields.io/badge/Docker-Optional-2496ED)](#docker-optional)
-[![License](https://img.shields.io/badge/License-BSD--3--Clause-blue)](#license)
+**Minecraft fleet operations hub**
 
-NeoDash is a standalone web panel for running and supervising Minecraft infrastructure from one place. It manages local server instances, starts and restarts them through the configured host runner, watches live health data, keeps recovery tools available while servers are offline, and routes trusted admins into the right loader-specific Dash interface when deeper plugin or mod work is needed.
+The native control layer for Minecraft server fleets: provisioning, lifecycle control, users, roles, groups, backups, audit, alerts, offline recovery, updates, and secure bridge handoff into Dash, FabricDash, and ForgeDash.
 
-NeoDash is intentionally split from the in-server dashboards:
+[![Version](https://img.shields.io/badge/Version-2.0-blue?style=for-the-badge)](#release-status)
+[![Java](https://img.shields.io/badge/Java-21%2B-orange?style=for-the-badge)](#requirements)
+[![Linux](https://img.shields.io/badge/Linux-recommended-success?style=for-the-badge)](#requirements)
+[![systemd](https://img.shields.io/badge/systemd-supported-success?style=for-the-badge)](#installation)
+[![Docker](https://img.shields.io/badge/Docker-optional-2496ED?style=for-the-badge)](#docker-optional)
+[![License](https://img.shields.io/badge/License-BSD%203--Clause-blue?style=for-the-badge)](#license)
 
-- **NeoDash** owns fleet-level operations: servers, users, roles, groups, backups, audit, alerts, native metrics, offline files, and update visibility.
-- **Dash, FabricDash, and ForgeDash** own loader-local tools: plugin/mod browser, Crash Doctor, detailed player intelligence, profiler views, and plugin/mod maintenance.
+</div>
 
-That split keeps NeoDash lightweight while still giving operators one secure entry point for the whole network.
+---
 
-## Key Features
+## Overview
 
-| Feature | Current Capability |
-|---|---|
-| Multi-server dashboard | Unified server cards with online state, TPS, RAM, path, runner type, bridge package version, update badges, and group overview. |
-| Server lifecycle control | Start, stop, and restart servers through the configured runner, with startup-log routing and automatic safety backups before restarts. |
-| Native runners | First-class Linux `screen` support, configured start commands, process detection, log tailing, and optional Docker-aware paths. |
-| Server installer | Provisions Paper, Purpur, Spigot, Bukkit, Fabric, Quilt, NeoForge, and Vanilla servers. |
-| Bridge auto-install | Can inject Dash for Bukkit-family servers, FabricDash for Fabric/Quilt, and ForgeDash for NeoForge during installation. |
-| Modpack bootstrap | Supports Modrinth slug/direct URL workflows for Fabric/Quilt installs, including `.mrpack` processing and server-side mod filtering. |
-| Server discovery | Scans configured roots, home/server paths, and common Linux locations for existing Minecraft servers and bridge configs. |
-| Bridge dashboard handoff | Opens the local Dash/FabricDash/ForgeDash panel with signed SSO and a NeoDash restart callback URL. |
-| Offline file rescue | Browser-based file rescue for offline/unmanaged servers: upload, folder upload, edit, save, download, rename, and guarded delete. |
-| Console access | Uses bridge console endpoints when available and native screen/log fallbacks when the server is managed directly by NeoDash. |
-| Live monitoring | Reads bridge health/stats and native JVM data, including TPS, MSPT, CPU, RAM, uptime, process state, and TCP reachability. |
-| Native JMX metrics | Uses the Java Attach API and local JMX to collect JVM metrics without requiring a plugin on Vanilla-like stacks. |
-| Ops Hub | Global maintenance page with smart alerts, server risk, disk/log/backup/crash checks, audit shortcuts, recovery tools, and plugin dashboard links. |
-| Smart alerts | Detects missing server roots, TPS drops, memory pressure, disk pressure, fresh crash reports, warning/error log patterns, player spikes, and missing backups. |
-| Backup and recovery | Creates verified local zip backups, supports full/config/world scopes, blocks rollback while running, and creates safety backups before restore. |
-| Google Drive backup mirror | Optional Google Drive OAuth connection for uploading verified maintenance backups. |
-| Audit and compliance | Persistent audit database, recent/searchable timeline, IP/user/action metadata, and CSV/JSON exports. |
-| RBAC and server permissions | Global roles, custom role permissions, main-admin ownership transfer, server assignments, and server-scoped rights for start, console, files, properties, and settings. |
-| Bridge user approval | SSO-created bridge users wait for admin approval before they can enter NeoDash. |
-| Server groups | Group servers for clearer operations and dashboard summaries. |
-| Graph snapshots | Comparison graphs saved as NeoDash JSON snapshots. |
-| Notifications | Persistent web notification center plus Discord webhook dispatch for audit and smart-alert events. |
-| Updates | GitHub-based update checks/downloads for NeoDash and version visibility for Dash, FabricDash, and ForgeDash. |
-| Responsive interface | Polished dark UI with smoother navigation, dashboard motion, custom selects, and repaired mobile sidebar behavior. |
+NeoDash is the native control layer for Minecraft server fleets. It manages server instances, users, roles, groups, backups, audit, alerts, offline recovery, updates, and secure bridge handoff into Dash, FabricDash, and ForgeDash.
 
-## Security Model
+NeoDash is built for operators who manage more than one server or need a central place for lifecycle control, provisioning, recovery, permissions, monitoring, update visibility, and bridge-based access into loader-local dashboards.
 
-NeoDash is built around explicit access control and operational accountability.
+## Current Release
 
-- **Authenticated sessions:** cookie-based login flow with first-run Main-Admin setup.
-- **Role hierarchy:** built-in ADMIN, MODERATOR, and USER roles plus custom ranks and permission sets.
-- **Server-scoped rights:** grant only the capabilities a user needs for a specific server.
-- **Bridge SSO safety:** HMAC-SHA256 signatures, timestamp checks, replay protection, per-server bridge secrets, and optional global SSO secret.
-- **Approval gate:** bridge-created users are not trusted automatically; a Main-Admin must approve them.
-- **Path hardening:** file operations resolve canonical paths and block protected lock/pid files.
-- **Audit trail:** high-value actions are written to the audit DB and can be reviewed or exported.
+- **Latest version:** `2.0`
+- **Release:** Version 2.0 - Minecraft fleet operations hub
+- **Release date:** `2026-07-06`
+- **Release:** available from the [GitHub releases page](../../releases)
+- **License:** BSD 3-Clause
 
-Production recommendation: run NeoDash behind TLS or a trusted reverse proxy, expose it only to trusted networks, and keep bridge secrets private.
+## What NeoDash Does
 
-## Operations Hub
+| Area | Capability |
+| --- | --- |
+| Fleet dashboard | Multi-server cards with status, TPS, RAM, runner type, bridge version, groups, and update visibility. |
+| Lifecycle | Start, stop, and restart servers through configured runners, startup logs, and safety backups. |
+| Provisioning | Create Paper, Purpur, Spigot, Bukkit, Fabric, Quilt, NeoForge, and Vanilla servers. |
+| Bridge install | Auto-install Dash, FabricDash, or ForgeDash during setup and write matching bridge settings. |
+| Bridge SSO | Signed handoff into loader dashboards with approval-aware bridge users and restart callbacks. |
+| Offline recovery | File rescue for offline or unmanaged servers with upload, folder upload, edit, rename, download, and guarded delete. |
+| Plugins and mods | Native server-scoped Plugins/Mods page for uploaded JARs, data folders, and bridge-local file work. |
+| Guardian | Cross-server Guardian entry point with server selection, bridge health, cases, rollback, incidents, and paged activity. |
+| Ops Hub | Smart alerts, crash/log signals, disk and backup risk, staff tools, audit shortcuts, and recovery actions. |
+| Backups | Verified local zip backups, restore scopes, safety backups before restore, and optional Google Drive mirror. |
+| Security | RBAC, custom roles, server-scoped rights, audit trail, bridge secrets, and path hardening. |
+| Updates | GitHub-backed update visibility for NeoDash, Dash, FabricDash, and ForgeDash. |
 
-The Maintenance page is the global NeoDash Ops Hub. It is designed for network-level decisions rather than loader-specific plugin work.
+## New in NeoDash 2.0
 
-It includes:
+NeoDash 2.0 is the major release that ties the Dash family together.
 
-- persistent smart alerts with unread/read/dismiss flows
-- verified backup creation and rollback
-- disk, memory, TPS, MSPT, crash-report, and log-pattern signals
-- audit and compliance shortcuts
-- staff notes, queue items, tasks, and server-scoped staff chat
-- links into the matching Dash/FabricDash/ForgeDash dashboard for plugin/mod work
+- Shared smooth animation layer across NeoDash, Dash, FabricDash, and ForgeDash.
+- Less bumpy navigation: page changes respond directly and content swaps feel fluid.
+- Guardian is shorter and clearer with sticky activity headers, paging, and full-width investigation tools.
+- Offline file rescue uploads refresh in place and preserve scroll position instead of jumping to the top.
+- File rows open from their whole bubble, not only the filename.
+- Native Plugins/Mods page for server-scoped JAR upload, browsing, editing, downloading, and deleting.
+- GitHub update center and version visibility for NeoDash and every Dash plugin variant.
+- Stronger bridge story: signed SSO, approval queue, restart callbacks, and startup-log routing.
 
-Plugin/mod installation, Crash Doctor, detailed profiler views, and player intelligence now live inside the local plugin dashboard where the server context is most accurate.
+## Features
 
-## Provisioning
+### Fleet Dashboard
 
-NeoDash can create a fully runnable server from the web UI.
+- Unified multi-server cards with online state, TPS, RAM, runner type, bridge version, groups, and update visibility.
+- Server grouping for clearer fleet organization.
+- Bridge health and update visibility across Dash, FabricDash, and ForgeDash servers.
+- Responsive dashboard layout for desktop, tablet, and mobile operators.
 
-Supported server types:
+### Lifecycle Control
 
-- Paper
-- Purpur
-- Spigot
-- Bukkit
-- Fabric
-- Quilt
-- NeoForge
-- Vanilla
+- Start, stop, and restart servers through configured runners.
+- Startup-log routing so operators can watch a server come back online.
+- Safety backups before high-impact lifecycle and restore operations.
+- Native `screen` support for Linux server control.
+- Process detection, log tailing, TCP reachability checks, and host-aware runtime state.
 
-During install NeoDash can:
+### Provisioning
 
-- download official server files or run required installers/build tools
-- generate startup scripts and memory settings
-- install Dash, FabricDash, or ForgeDash when bridge mode is enabled
-- write matching bridge configuration with port and shared secret
-- process compatible Modrinth modpacks for Fabric/Quilt
-- register the finished server in the NeoDash database
+- Create Paper, Purpur, Spigot, Bukkit, Fabric, Quilt, NeoForge, and Vanilla servers.
+- Generate startup scripts and memory settings.
+- Install Dash, FabricDash, or ForgeDash during setup when bridge mode is enabled.
+- Write matching bridge configuration with port and shared secret.
+- Register completed servers in the NeoDash database.
+- Discover and add existing servers through scan workflows.
 
-Existing servers can also be added manually or discovered through the scan workflow.
+### Bridge Integration
 
-## Bridge Integration
+- Signed SSO handoff into Dash, FabricDash, and ForgeDash.
+- Approval-aware bridge users before access is granted.
+- Restart callbacks from loader dashboards back into NeoDash.
+- Startup-log routing after restart actions.
+- Bridge sessions keep the master dashboard URL and restart callback for future lifecycle actions.
 
-NeoDash talks to Dash, FabricDash, and ForgeDash through a shared-secret bridge.
+### Guardian
 
-The bridge is used for:
+- Cross-server Guardian entry point with server selection and bridge health context.
+- Cases, rollback, incidents, and paged activity views.
+- Sticky activity headers for easier scanning.
+- Full-width investigation tools for a cleaner workflow.
+- Shorter Guardian surfaces that avoid extremely long pages.
 
-- health and stats snapshots
-- console logs and command dispatch
-- opening the local plugin dashboard
-- SSO into the plugin dashboard
-- restart requests routed back through NeoDash's configured start command
+### Offline Recovery
 
-If no bridge is available, NeoDash still keeps native controls and offline recovery available for host-managed servers.
+- File rescue for offline or unmanaged servers.
+- Upload and folder upload support.
+- Edit, rename, download, and guarded delete flows.
+- Upload refreshes preserve scroll position and stay in context.
+- File rows open from the whole row bubble for faster navigation.
+
+### Plugins and Mods
+
+- Native server-scoped Plugins/Mods page.
+- Upload JAR files.
+- Browse, edit, download, and delete server-scoped plugin or mod files.
+- Keep loader-local work inside Dash, FabricDash, or ForgeDash when deeper plugin/mod diagnostics are needed.
+
+### Ops Hub
+
+- Smart alerts for fleet-level risk and maintenance signals.
+- Crash and log signals.
+- Disk and backup risk visibility.
+- Staff tools and audit shortcuts.
+- Recovery actions from one central operations surface.
+
+### Backups
+
+- Verified local zip backups.
+- Restore scopes for targeted recovery.
+- Safety backups before restore operations.
+- Optional Google Drive mirror for verified maintenance backups.
+
+### Security and Access Control
+
+- Cookie-based authenticated sessions with first-run Main-Admin setup.
+- Built-in roles plus custom ranks and permission sets.
+- Server-scoped rights for start, console, files, properties, and settings.
+- Bridge SSO with HMAC-SHA256 signatures, timestamp checks, and replay protection.
+- Bridge-created users require approval before access.
+- File operations resolve canonical paths and block protected runtime files.
+- High-value actions are written to the audit database.
+
+### Updates
+
+- GitHub-backed update visibility for NeoDash, Dash, FabricDash, and ForgeDash.
+- Central update center for the full Dash family.
+- Version visibility across loader-specific dashboards.
+- Clear release visibility for operators managing mixed server fleets.
 
 ## Installation
 
@@ -125,14 +158,7 @@ If no bridge is available, NeoDash still keeps native controls and offline recov
 curl -sSL https://raw.githubusercontent.com/Framepersecond/NeoDash/main/install.sh | bash
 ```
 
-The installer will:
-
-1. Detect the Linux package manager.
-2. Install Java 21 and `screen` when missing.
-3. Download the latest NeoDash release JAR.
-4. Ask for panel port, server root, and data directory.
-5. Register NeoDash as a `systemd` service when available.
-6. Fall back to a persistent `screen` session when `systemd` is unavailable.
+The installer can install Java 21 and `screen`, download NeoDash, configure the port and server root, and register a system service when available.
 
 ### Service management
 
@@ -149,12 +175,12 @@ java \
   -Dneodash.port=8080 \
   -Dneodash.serverDir=/home/user/servers \
   -Dneodash.dataDir=/home/user/NeoDash/data \
-  -jar NeoDash-1.5.1-shaded.jar
+  -jar NeoDash-2.0-shaded.jar
 ```
 
-### Docker optional
+### Docker Optional
 
-Docker artifacts are still included for containerized setups, but the recommended path is native Linux. Native mode lets NeoDash access host paths, `screen`, JMX attach, startup scripts, and log files without volume-mapping surprises.
+Docker artifacts are available for containerized setups, but native Linux is recommended when NeoDash needs host paths, `screen`, JMX attach, startup scripts, and direct log access.
 
 ```bash
 docker compose up -d
@@ -165,27 +191,40 @@ docker compose up -d
 - Java 21 or newer
 - Linux host recommended
 - `screen` for native server lifecycle control
-- Host permissions that allow Java Attach/JMX when using native JVM metrics
-- Docker only when intentionally deploying NeoDash in a container
+- Host permissions for Java Attach/JMX metrics when using native JVM metrics
+- Docker only for intentional container deployments
+
+## Security Model
+
+NeoDash is designed for explicit operator access.
+
+- Cookie-based authenticated sessions with first-run Main-Admin setup.
+- Built-in roles plus custom ranks and permission sets.
+- Server-scoped rights for start, console, files, properties, and settings.
+- Bridge SSO with HMAC-SHA256 signatures, timestamp checks, and replay protection.
+- Bridge-created users require approval before access.
+- File operations resolve canonical paths and block protected runtime files.
+- High-value actions are written to the audit database.
+
+For production, run NeoDash behind TLS or a trusted reverse proxy and expose it only to staff networks.
+
+## Bridge Split
+
+NeoDash owns fleet-level operations.
+
+Dash, FabricDash, and ForgeDash own loader-local work such as plugin/mod maintenance, detailed diagnostics, player intelligence, and profiler views.
+
+That split keeps NeoDash clean while still giving operators one entry point for the full network.
 
 ## Release Status
 
-Current project version: **1.5.1**
+Current release: **NeoDash 2.0**
 
-Highlights in the current generation:
-
-- improved startup and restart flow with startup-log visibility
-- offline file rescue with folder upload, download, rename, edit, save, and guarded delete
-- mobile navigation fixes and smoother dashboard motion
-- new global Ops Hub with smart alerts, backups, notifications, audit exports, groups, and graphs
-- staff workflow tools for notes, tickets, tasks, and staff chat
-- clearer split between NeoDash global operations and loader-local Dash/FabricDash/ForgeDash maintenance
-
-See `RELEASE_NOTES.md` for the full changelog.
+See `RELEASE_NOTES.md` for the 2.0 changelog and `MODRINTH_README.md` for publication-ready copy.
 
 ## License
 
-BSD 3-Clause. See `LICENSE` if included in your distribution.
+BSD 3-Clause. See `LICENSE` for details.
 
 ---
 
@@ -202,7 +241,11 @@ BSD 3-Clause. See `LICENSE` if included in your distribution.
 DDoS protection, NVMe performance, and 99.9% uptime. The host I trust for development servers.
 
 <a href="https://emeraldhost.de/frxme">
-  <img src="https://img.shields.io/badge/Code-Frxme10-10b981?style=for-the-badge&logo=gift&logoColor=white&labelColor=0f172a" alt="Use Code Frxme10 for 10% off">
+  <img src="https://img.shields.io/badge/Code-Frxme10-10b981?style=for-the-badge&logo=gift&logoColor=white&labelColor=0f172a" alt="Use code Frxme10 for 10% off">
 </a>
 
 </div>
+
+---
+
+*For issues, feature requests, or contributions, please visit the [GitHub repository](../../issues).*
